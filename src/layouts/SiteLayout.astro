@@ -69,6 +69,10 @@ const { title = "my manual" } = Astro.props;
     min-height: 100vh;
   }
 
+  :global(html) {
+    scrollbar-gutter: stable;
+  }
+
   :global(a) {
     color: inherit;
     text-decoration: none;
