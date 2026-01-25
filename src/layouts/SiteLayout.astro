@@ -80,7 +80,7 @@ const { title = "my manual" } = Astro.props;
     flex-direction: column;
   }
 
-  .site-header {
+  :global(.site-header) {
     position: relative;
     padding: 40px 20px 32px;
     min-height: clamp(220px, 38vh, 460px);
@@ -91,7 +91,7 @@ const { title = "my manual" } = Astro.props;
     border-bottom: 1px solid rgba(255, 59, 79, 0.35);
   }
 
-  .site-header::after {
+  :global(.site-header)::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -180,7 +180,7 @@ const { title = "my manual" } = Astro.props;
   }
 
   @media (max-width: 760px) {
-    .site-header {
+    :global(.site-header) {
       min-height: clamp(150px, 24vh, 200px);
       padding: 24px 18px 22px;
     }
