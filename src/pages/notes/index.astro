@@ -2,10 +2,11 @@
 import { getCollection } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
 import FilterBar from "../../components/FilterBar.astro";
-import { structural, STRUCTURAL_DEFAULT } from "../../config/taxonomy";
+import { structural, STRUCTURAL_DEFAULT, STRUCTURAL_SCHEMES } from "../../config/taxonomy";
 
 const allNotes = await getCollection("notes", ({ data }) => !data.draft);
 const notes = allNotes.sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""));
+const schemes = await getCollection("schemes");
 
 const getPreview = (body) => {
   const clean = body.replace(/\s+/g, " ").trim();
@@ -41,6 +42,20 @@ const getPreview = (body) => {
         </a>
       </article>
     ))}
+    {schemes.map((scheme) => (
+      <article
+        class="scheme-card"
+        data-note-card
+        data-type="scheme"
+        data-struct={STRUCTURAL_SCHEMES}
+        data-topics={scheme.data.topics}
+      >
+        <div class="scheme-title">{scheme.data.title}</div>
+        <div class="scheme-image">
+          <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+        </div>
+      </article>
+    ))}
   </section>
 
   <script is:inline>
@@ -64,12 +79,22 @@ const getPreview = (body) => {
         let structOk = false;
         let topicsOk = false;
 
-        if (activeTopic) {
-          structOk = cardType !== "note" || cardStruct !== "НА ЗАМЕТКУ";
-          topicsOk = cardTopics.includes(activeTopic);
+        if (cardType === "scheme") {
+          if (activeTopic) {
+            structOk = true;
+            topicsOk = cardTopics.includes(activeTopic);
+          } else {
+            structOk = activeStruct === STRUCTURAL_SCHEMES;
+            topicsOk = true;
+          }
         } else {
-          structOk = !activeStruct || activeStruct === list?.dataset.defaultStruct || cardStruct === activeStruct;
-          topicsOk = true;
+          if (activeTopic) {
+            structOk = cardStruct !== "НА ЗАМЕТКУ";
+            topicsOk = cardTopics.includes(activeTopic);
+          } else {
+            structOk = !activeStruct || activeStruct === list?.dataset.defaultStruct || cardStruct === activeStruct;
+            topicsOk = true;
+          }
         }
 
         card.style.display = structOk && topicsOk ? "block" : "none";
@@ -167,6 +192,36 @@ const getPreview = (body) => {
     margin: 0;
     color: var(--muted);
     line-height: 1.5;
+  }
+
+  .scheme-card {
+    border: 1px solid rgba(29, 233, 214, 0.3);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 0 24px rgba(29, 233, 214, 0.12);
+  }
+
+  .scheme-title {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.95rem;
+  }
+
+  .scheme-image {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 59, 79, 0.2);
+    background: rgba(9, 10, 16, 0.7);
+  }
+
+  .scheme-image img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
 
