@@ -1,0 +1,179 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import { structural, STRUCTURAL_DEFAULT } from "../../config/taxonomy";
+
+const allNotes = await getCollection("notes", ({ data }) => !data.draft);
+const notes = allNotes.sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""));
+
+const getPreview = (body) => {
+  const clean = body.replace(/\s+/g, " ").trim();
+  const match = clean.match(/^(.*?[.!?])\s/);
+  if (match) return match[1];
+  return clean.slice(0, 160);
+};
+---
+
+<SiteLayout title="my manual">
+  <FilterBar slot="filters" mode="filter" current="notes" activeStructural={STRUCTURAL_DEFAULT} />
+
+  <section
+    class="note-list list-mode"
+    data-filter-list
+    data-default-struct={STRUCTURAL_DEFAULT}
+    data-struct-values={structural.join("|")}
+  >
+    {notes.map((note) => (
+      <article
+        class="note-card"
+        data-note-card
+        data-type="note"
+        data-struct={note.data.structural}
+        data-topics={note.data.topics.join("|")}
+      >
+        <a class="note-link" href={`/notes/${note.slug}/`}>
+          <div class="note-head">
+            <h2>{note.data.title}</h2>
+            {note.data.date ? <span class="note-date">{note.data.date}</span> : null}
+          </div>
+          <p class="note-preview">{getPreview(note.body)}</p>
+        </a>
+      </article>
+    ))}
+  </section>
+
+  <script is:inline>
+    const structButtons = Array.from(document.querySelectorAll("button[data-struct]"));
+    const topicButtons = Array.from(document.querySelectorAll("button[data-topic]"));
+    const cards = Array.from(document.querySelectorAll("[data-note-card]"));
+    const list = document.querySelector("[data-filter-list]");
+    const allowedStructs = new Set((list?.dataset.structValues || "").split("|").filter(Boolean));
+    const params = new URLSearchParams(window.location.search);
+    const paramStruct = params.get("struct");
+
+    let activeStruct = allowedStructs.has(paramStruct || "") ? paramStruct : list?.dataset.defaultStruct || null;
+    let activeTopic = null;
+
+    const applyFilters = () => {
+      cards.forEach((card) => {
+        const cardStruct = card.dataset.struct || "";
+        const cardTopics = (card.dataset.topics || "").split("|").filter(Boolean);
+        const cardType = card.dataset.type || "note";
+
+        let structOk = false;
+        let topicsOk = false;
+
+        if (activeTopic) {
+          structOk = cardType !== "note" || cardStruct !== "НА ЗАМЕТКУ";
+          topicsOk = cardTopics.includes(activeTopic);
+        } else {
+          structOk = !activeStruct || activeStruct === list?.dataset.defaultStruct || cardStruct === activeStruct;
+          topicsOk = true;
+        }
+
+        card.style.display = structOk && topicsOk ? "block" : "none";
+      });
+
+      if (list) {
+        list.classList.toggle("list-mode", activeStruct === list.dataset.defaultStruct && !activeTopic);
+      }
+    };
+
+    structButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.dataset.struct;
+        if (!value) return;
+
+        activeStruct = value;
+
+        structButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.struct === activeStruct));
+        applyFilters();
+      });
+    });
+
+    topicButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.dataset.topic;
+        if (!value) return;
+
+        if (activeTopic === value) {
+          activeTopic = null;
+        } else {
+          activeTopic = value;
+        }
+
+        topicButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.topic === activeTopic));
+        applyFilters();
+      });
+    });
+
+    structButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.struct === activeStruct));
+    applyFilters();
+  </script>
+</SiteLayout>
+
+<style>
+  .note-list {
+    display: grid;
+    gap: 16px;
+  }
+
+  .note-list.list-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .note-card {
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    background: var(--card);
+    padding: 16px 18px;
+    box-shadow: 0 0 24px rgba(255, 59, 79, 0.08);
+  }
+
+  .note-list.list-mode .note-card {
+    border-radius: 10px;
+    padding: 12px 16px;
+  }
+
+  .note-link {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .note-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .note-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .note-date {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .note-preview {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+
+  @media (max-width: 760px) {
+    .note-head {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

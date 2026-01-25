@@ -1,0 +1,164 @@
+---
+import { structural, topics, STRUCTURAL_SCHEMES } from "../config/taxonomy";
+
+const {
+  mode = "filter",
+  activeStructural = null,
+  activeTopics = [],
+  current = null
+} = Astro.props;
+
+const activeTopicSet = new Set(activeTopics);
+---
+
+<div class="filter-group">
+  <div class="filter-row">
+    {structural.map((label) => {
+      const isActive = label === activeStructural;
+      if (label === STRUCTURAL_SCHEMES) {
+        return (
+          <a href="/schemes" class={`btn btn-struct ${isActive ? "is-active" : ""}`}>
+            {label}
+          </a>
+        );
+      }
+
+      if (mode === "links") {
+        const href = `/notes?struct=${encodeURIComponent(label)}`;
+        return (
+          <a href={href} class={`btn btn-struct ${isActive ? "is-active" : ""}`}>
+            {label}
+          </a>
+        );
+      }
+
+      return (
+        <button
+          class={`btn btn-struct ${isActive ? "is-active" : ""}`}
+          type="button"
+          data-struct={label}
+        >
+          {label}
+        </button>
+      );
+    })}
+  </div>
+
+  <div class="filter-divider" aria-hidden="true"></div>
+
+  <div class="filter-row small">
+    {topics.map((tag) => (
+      <button
+        class={`btn btn-topic ${activeTopicSet.has(tag) ? "is-active" : ""}`}
+        type="button"
+        data-topic={tag}
+      >
+        {tag}
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .filter-divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(255, 59, 79, 0.2), rgba(29, 233, 214, 0.18));
+    opacity: 0.7;
+    margin: 6px 0 10px;
+  }
+
+  .filter-row.small .btn {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+  }
+
+  .btn {
+    border: 1px solid rgba(255, 59, 79, 0.35);
+    background: linear-gradient(135deg, rgba(19, 19, 28, 0.9), rgba(14, 14, 20, 0.9));
+    color: inherit;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.8rem;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 0 16px rgba(255, 59, 79, 0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .btn-struct {
+    padding: 14px 22px;
+    font-size: 0.95rem;
+    letter-spacing: 0.22em;
+    box-shadow: 0 0 22px rgba(255, 59, 79, 0.2);
+  }
+
+  .btn-topic {
+    font-family: "Share Tech Mono", "JetBrains Mono", "Courier New", monospace;
+    border-color: rgba(255, 59, 79, 0.2);
+    box-shadow: 0 0 10px rgba(255, 59, 79, 0.08);
+  }
+
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    opacity: 0;
+    background: linear-gradient(120deg, rgba(255, 59, 79, 0.15), rgba(29, 233, 214, 0.2));
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 18px rgba(29, 233, 214, 0.2);
+    border-color: rgba(29, 233, 214, 0.45);
+  }
+
+  .btn:hover::after {
+    opacity: 1;
+  }
+
+  .btn.is-active {
+    border-color: rgba(29, 233, 214, 0.65);
+    box-shadow: 0 0 22px rgba(29, 233, 214, 0.3);
+    color: #ffffff;
+  }
+
+  @media (max-width: 760px) {
+    .filter-row {
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 9px 14px;
+      font-size: 0.72rem;
+    }
+
+    .filter-row.small .btn {
+      padding: 7px 10px;
+      font-size: 0.68rem;
+    }
+
+    .btn-struct {
+      padding: 12px 18px;
+      font-size: 0.82rem;
+    }
+  }
+</style>

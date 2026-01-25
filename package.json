@@ -1,0 +1,15 @@
+{
+  "name": "my_manual",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "npm run cms:config && astro dev",
+    "build": "npm run cms:config && astro build",
+    "cms:config": "node scripts/generate-cms-config.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.16.15"
+  }
+}

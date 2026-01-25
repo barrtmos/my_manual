@@ -1,0 +1,38 @@
+backend:
+  name: git-gateway
+local_backend: true
+media_folder: "public/img"
+public_folder: "/img"
+
+collections:
+  - name: "notes"
+    label: "Notes"
+    folder: "src/content/notes"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false }
+      - label: "Structural"
+        name: "structural"
+        widget: "select"
+        options:
+          - "ЗАМЕТКИ"
+          - "ДИАЛОГИ"
+          - "ИНСТРУКЦИИ"
+          - "СХЕМЫ"
+          - "НА ЗАМЕТКУ"
+      - label: "Topics"
+        name: "topics"
+        widget: "select"
+        options:
+          - "ЛИНУКС"
+          - "ГИТХАБ"
+          - "ГИТ"
+          - "VSC"
+          - "БЭКЕНД"
+          - "РНР"
+          - "LARAVEL"
+        multiple: true
+      - { label: "Draft", name: "draft", widget: "boolean", required: false, default: false }
+      - { label: "Body", name: "body", widget: "markdown" }

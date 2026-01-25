@@ -1,0 +1,93 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import { STRUCTURAL_SCHEMES } from "../../config/taxonomy";
+
+const schemes = await getCollection("schemes");
+const sortedSchemes = schemes.sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""));
+---
+
+<SiteLayout title="my manual">
+  <FilterBar slot="filters" mode="links" current="schemes" activeStructural={STRUCTURAL_SCHEMES} />
+
+  <section class="scheme-grid" data-filter-schemes>
+    {sortedSchemes.map((scheme) => (
+      <article class="scheme-card" data-scheme-card data-topics={scheme.data.topics}
+      >
+        <div class="scheme-title">{scheme.data.title}</div>
+        <div class="scheme-image">
+          <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <script is:inline>
+    const topicButtons = Array.from(document.querySelectorAll("button[data-topic]"));
+    const cards = Array.from(document.querySelectorAll("[data-scheme-card]"));
+    let activeTopic = null;
+
+    const applyFilters = () => {
+      cards.forEach((card) => {
+        const cardTopics = (card.dataset.topics || "").split("|").filter(Boolean);
+        const topicsOk = !activeTopic || cardTopics.includes(activeTopic);
+        card.style.display = topicsOk ? "block" : "none";
+      });
+    };
+
+    topicButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const value = btn.dataset.topic;
+        if (!value) return;
+
+        if (activeTopic === value) {
+          activeTopic = null;
+        } else {
+          activeTopic = value;
+        }
+
+        topicButtons.forEach((b) => b.classList.toggle("is-active", b.dataset.topic === activeTopic));
+        applyFilters();
+      });
+    });
+  </script>
+</SiteLayout>
+
+<style>
+  .scheme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+  }
+
+  .scheme-card {
+    border: 1px solid rgba(29, 233, 214, 0.3);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 0 24px rgba(29, 233, 214, 0.12);
+  }
+
+  .scheme-title {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.95rem;
+  }
+
+  .scheme-image {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 59, 79, 0.2);
+    background: rgba(9, 10, 16, 0.7);
+  }
+
+  .scheme-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import FilterBar from "../../components/FilterBar.astro";
+
+export async function getStaticPaths() {
+  const notes = await getCollection("notes", ({ data }) => !data.draft);
+  return notes.map((note) => ({
+    params: { slug: note.slug },
+    props: { note }
+  }));
+}
+
+const { note } = Astro.props;
+const { Content } = await note.render();
+---
+
+<SiteLayout title="my manual">
+  <FilterBar
+    slot="filters"
+    mode="filter"
+    current="notes"
+    activeStructural={note.data.structural}
+    activeTopics={note.data.topics}
+  />
+
+  <article class="note-full">
+    <header class="note-full-head">
+      <h2>{note.data.title}</h2>
+      {note.data.date ? <div class="note-full-date">{note.data.date}</div> : null}
+      <div class="note-meta">
+        <span>{note.data.structural}</span>
+        <span>{note.data.topics.join(" • ")}</span>
+      </div>
+    </header>
+    <div class="note-body">
+      <Content />
+    </div>
+  </article>
+</SiteLayout>
+
+<style>
+  .note-full {
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 24px;
+    box-shadow: 0 0 26px rgba(255, 59, 79, 0.12);
+  }
+
+  .note-full-head h2 {
+    margin: 0 0 8px;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .note-full-date {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .note-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .note-body :global(p) {
+    line-height: 1.6;
+    color: #d7d7df;
+  }
+
+  .note-body :global(h3) {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .note-body :global(code) {
+    background: rgba(29, 233, 214, 0.12);
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  .note-body :global(pre) {
+    background: rgba(9, 10, 16, 0.9);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(29, 233, 214, 0.25);
+    overflow-x: auto;
+  }
+</style>
