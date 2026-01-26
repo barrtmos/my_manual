@@ -28,15 +28,19 @@ collections:
           - "НА ЗАМЕТКУ"
       - label: "Topics"
         name: "topics"
-        widget: "select"
-        options:
-          - "ЛИНУКС"
-          - "ГИТХАБ"
-          - "ГИТ"
-          - "VSC"
-          - "БЭКЕНД"
-          - "РНР"
-          - "LARAVEL"
-        multiple: true
+        widget: "list"
+        max: 1
+        field:
+          label: "Topic"
+          name: "topic"
+          widget: "select"
+          options:
+            - "ЛИНУКС"
+            - "ГИТХАБ"
+            - "ГИТ"
+            - "VSC"
+            - "БЭКЕНД"
+            - "РНР"
+            - "LARAVEL"
       - { label: "Draft", name: "draft", widget: "boolean", required: false, default: false }
       - { label: "Body", name: "body", widget: "markdown" }
