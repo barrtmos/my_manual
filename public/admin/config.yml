@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: bartmos/my_manual
+  repo: barrtmos/my_manual
   branch: main
   base_url: https://decap-oauth-render-478e.onrender.com
   auth_endpoint: auth
