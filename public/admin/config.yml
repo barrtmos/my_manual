@@ -1,6 +1,10 @@
 backend:
-  name: git-gateway
-local_backend: true
+  name: github
+  repo: bartmos/my_manual
+  branch: main
+  base_url: https://decap-oauth-render-478e.onrender.com
+  auth_endpoint: auth
+
 media_folder: "public/img"
 public_folder: "/img"
 
