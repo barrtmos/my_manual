@@ -1,18 +1,28 @@
 ---
-title: Установка VSC на Федору
+title: Гит на новом ПК
 date: 2026-01-26
 structural: ИНСТРУКЦИИ
-topics: ЛИНУКС
+topics: ГИТ
 draft: false
 ---
-sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+Удаляем старую историю Git 
 
-sudo sh -c 'echo -e "\[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+rm -rf .git
 
-sudo dnf check-update
+Создаем чистую историю
 
-sudo dnf install code
+git init
 
+git add .
 
+git commit -m "Initial commit"
 
-> code
+Настраиваем ветку и связь с GitHub
+
+git branch -M main
+
+git remote add origin git@github.com:ваш\_логин/имя\_репозитория.git
+
+Отправляем код на GitHub
+
+git push -u origin main
