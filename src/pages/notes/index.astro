@@ -5,8 +5,14 @@ import FilterBar from "../../components/FilterBar.astro";
 import { structural, STRUCTURAL_DEFAULT, STRUCTURAL_SCHEMES } from "../../config/taxonomy";
 
 const allNotes = await getCollection("notes", ({ data }) => !data.draft);
-const notes = allNotes.sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""));
+const notes = allNotes.sort((a, b) => {
+  const aTime = a.data.date ? new Date(a.data.date).valueOf() : 0;
+  const bTime = b.data.date ? new Date(b.data.date).valueOf() : 0;
+  return bTime - aTime;
+});
 const schemes = await getCollection("schemes");
+
+const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] : []);
 
 const getPreview = (body) => {
   const clean = body.replace(/\s+/g, " ").trim();
@@ -31,12 +37,12 @@ const getPreview = (body) => {
         data-note-card
         data-type="note"
         data-struct={note.data.structural}
-        data-topics={note.data.topics.join("|")}
+        data-topics={toTopicList(note.data.topics).join("|")}
       >
         <a class="note-link" href={`/notes/${note.slug}/`}>
           <div class="note-head">
             <h2>{note.data.title}</h2>
-            {note.data.date ? <span class="note-date">{note.data.date}</span> : null}
+            {note.data.date ? <span class="note-date">{note.data.date.toISOString().slice(0, 10)}</span> : null}
           </div>
           <p class="note-preview">{getPreview(note.body)}</p>
         </a>
@@ -48,11 +54,13 @@ const getPreview = (body) => {
         data-note-card
         data-type="scheme"
         data-struct={STRUCTURAL_SCHEMES}
-        data-topics={scheme.data.topics}
+        data-topics={toTopicList(scheme.data.topics).join("|")}
       >
         <div class="scheme-title">{scheme.data.title}</div>
         <div class="scheme-image">
-          <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+          {scheme.data.image ? (
+            <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+          ) : null}
         </div>
       </article>
     ))}

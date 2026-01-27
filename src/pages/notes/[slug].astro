@@ -27,10 +27,10 @@ const { Content } = await note.render();
   <article class="note-full">
     <header class="note-full-head">
       <h2>{note.data.title}</h2>
-      {note.data.date ? <div class="note-full-date">{note.data.date}</div> : null}
+      {note.data.date ? <div class="note-full-date">{note.data.date.toISOString().slice(0, 10)}</div> : null}
       <div class="note-meta">
         <span>{note.data.structural}</span>
-        <span>{note.data.topics.join(" • ")}</span>
+        <span>{(Array.isArray(note.data.topics) ? note.data.topics : [note.data.topics]).filter(Boolean).join(" • ")}</span>
       </div>
     </header>
     <div class="note-body">

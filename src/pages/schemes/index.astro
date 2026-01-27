@@ -5,7 +5,12 @@ import FilterBar from "../../components/FilterBar.astro";
 import { STRUCTURAL_SCHEMES } from "../../config/taxonomy";
 
 const schemes = await getCollection("schemes");
-const sortedSchemes = schemes.sort((a, b) => (b.data.date ?? "").localeCompare(a.data.date ?? ""));
+const sortedSchemes = schemes.sort((a, b) => {
+  const aTime = a.data.date ? new Date(a.data.date).valueOf() : 0;
+  const bTime = b.data.date ? new Date(b.data.date).valueOf() : 0;
+  return bTime - aTime;
+});
+const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] : []);
 ---
 
 <SiteLayout title="my manual">
@@ -13,11 +18,13 @@ const sortedSchemes = schemes.sort((a, b) => (b.data.date ?? "").localeCompare(a
 
   <section class="scheme-grid" data-filter-schemes>
     {sortedSchemes.map((scheme) => (
-      <article class="scheme-card" data-scheme-card data-topics={scheme.data.topics}
+      <article class="scheme-card" data-scheme-card data-topics={toTopicList(scheme.data.topics).join("|")}
       >
         <div class="scheme-title">{scheme.data.title}</div>
         <div class="scheme-image">
-          <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+          {scheme.data.image ? (
+            <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+          ) : null}
         </div>
       </article>
     ))}
