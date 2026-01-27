@@ -5,11 +5,7 @@ import FilterBar from "../../components/FilterBar.astro";
 import { structural, STRUCTURAL_DEFAULT, STRUCTURAL_SCHEMES } from "../../config/taxonomy";
 
 const allNotes = await getCollection("notes", ({ data }) => !data.draft);
-const notes = allNotes.sort((a, b) => {
-  const aTime = a.data.date ? new Date(a.data.date).valueOf() : 0;
-  const bTime = b.data.date ? new Date(b.data.date).valueOf() : 0;
-  return bTime - aTime;
-});
+const notes = allNotes;
 const schemes = await getCollection("schemes");
 
 const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] : []);
@@ -42,7 +38,6 @@ const getPreview = (body) => {
         <a class="note-link" href={`/notes/${note.slug}/`}>
           <div class="note-head">
             <h2>{note.data.title}</h2>
-            {note.data.date ? <span class="note-date">{note.data.date.toISOString().slice(0, 10)}</span> : null}
           </div>
           <p class="note-preview">{getPreview(note.body)}</p>
         </a>
@@ -87,20 +82,23 @@ const getPreview = (body) => {
         let structOk = false;
         let topicsOk = false;
 
+        const isDefault = activeStruct === list?.dataset.defaultStruct;
+
         if (cardType === "scheme") {
-          if (activeTopic) {
-            structOk = true;
-            topicsOk = cardTopics.includes(activeTopic);
-          } else {
-            structOk = activeStruct === STRUCTURAL_SCHEMES;
-            topicsOk = true;
-          }
+          structOk = activeStruct === STRUCTURAL_SCHEMES;
+          topicsOk = !activeTopic || cardTopics.includes(activeTopic);
         } else {
-          if (activeTopic) {
-            structOk = cardStruct !== "НА ЗАМЕТКУ";
-            topicsOk = cardTopics.includes(activeTopic);
+          if (isDefault) {
+            structOk = true;
+          } else if (activeStruct === "НА ЗАМЕТКУ") {
+            structOk = cardStruct === "НА ЗАМЕТКУ";
           } else {
-            structOk = !activeStruct || activeStruct === list?.dataset.defaultStruct || cardStruct === activeStruct;
+            structOk = cardStruct === activeStruct;
+          }
+
+          if (activeTopic) {
+            topicsOk = cardStruct !== "НА ЗАМЕТКУ" && cardTopics.includes(activeTopic);
+          } else {
             topicsOk = true;
           }
         }
@@ -189,11 +187,6 @@ const getPreview = (body) => {
     font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-  }
-
-  .note-date {
-    font-size: 0.78rem;
-    color: var(--muted);
   }
 
   .note-preview {

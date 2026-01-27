@@ -10,7 +10,6 @@ const notes = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
-    date: z.coerce.date().optional(),
     structural: z.string().optional().default("ЗАМЕТКИ"),
     topics: topicsSchema,
     draft: z.boolean().optional()
@@ -21,7 +20,6 @@ const schemes = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
-    date: z.coerce.date().optional(),
     topics: topicsSchema,
     image: z.string().optional().default("")
   })

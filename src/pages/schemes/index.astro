@@ -5,11 +5,7 @@ import FilterBar from "../../components/FilterBar.astro";
 import { STRUCTURAL_SCHEMES } from "../../config/taxonomy";
 
 const schemes = await getCollection("schemes");
-const sortedSchemes = schemes.sort((a, b) => {
-  const aTime = a.data.date ? new Date(a.data.date).valueOf() : 0;
-  const bTime = b.data.date ? new Date(b.data.date).valueOf() : 0;
-  return bTime - aTime;
-});
+const sortedSchemes = schemes;
 const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] : []);
 ---
 

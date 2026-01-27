@@ -27,7 +27,6 @@ const { Content } = await note.render();
   <article class="note-full">
     <header class="note-full-head">
       <h2>{note.data.title}</h2>
-      {note.data.date ? <div class="note-full-date">{note.data.date.toISOString().slice(0, 10)}</div> : null}
       <div class="note-meta">
         <span>{note.data.structural}</span>
         <span>{(Array.isArray(note.data.topics) ? note.data.topics : [note.data.topics]).filter(Boolean).join(" • ")}</span>
@@ -53,12 +52,6 @@ const { Content } = await note.render();
     font-size: 1.6rem;
     text-transform: uppercase;
     letter-spacing: 0.12em;
-  }
-
-  .note-full-date {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-bottom: 10px;
   }
 
   .note-meta {
