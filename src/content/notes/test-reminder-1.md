@@ -1,5 +1,5 @@
 ---
-title: На заметку: cron и логи
+title: "На заметку: cron и логи"
 structural: НА ЗАМЕТКУ
 topics:
   - ЛИНУКС
