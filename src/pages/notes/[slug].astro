@@ -25,6 +25,9 @@ const { Content } = await note.render();
   />
 
   <article class="note-full">
+    <div class="note-back">
+      <a class="note-back-link" href="/notes">НАЗАД</a>
+    </div>
     <header class="note-full-head">
       <h2>{note.data.title}</h2>
       <div class="note-meta">
@@ -45,6 +48,32 @@ const { Content } = await note.render();
     background: var(--card);
     padding: 24px;
     box-shadow: 0 0 26px rgba(255, 59, 79, 0.12);
+  }
+
+  .note-back {
+    margin-bottom: 14px;
+  }
+
+  .note-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid rgba(29, 233, 214, 0.35);
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    color: var(--ink);
+    background: linear-gradient(135deg, rgba(12, 12, 18, 0.9), rgba(10, 10, 14, 0.9));
+    box-shadow: 0 0 16px rgba(29, 233, 214, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .note-back-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 59, 79, 0.55);
+    box-shadow: 0 0 18px rgba(255, 59, 79, 0.2);
   }
 
   .note-full-head h2 {
