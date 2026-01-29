@@ -50,7 +50,6 @@ const getPreview = (body) => {
         data-type="scheme"
         data-struct={STRUCTURAL_SCHEMES}
         data-topics={toTopicList(scheme.data.topics).join("|")}
-        style="display: none"
       >
         <div class="scheme-title">{scheme.data.title}</div>
         <div class="scheme-image">
@@ -86,7 +85,7 @@ const getPreview = (body) => {
         const isDefault = activeStruct === list?.dataset.defaultStruct;
 
         if (cardType === "scheme") {
-          structOk = activeStruct === STRUCTURAL_SCHEMES;
+          structOk = isDefault || activeStruct === STRUCTURAL_SCHEMES;
           topicsOk = !activeTopic || cardTopics.includes(activeTopic);
         } else {
           if (isDefault) {
