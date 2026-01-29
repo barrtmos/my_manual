@@ -12,6 +12,10 @@ const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] :
 <SiteLayout title="my manual">
   <FilterBar slot="filters" mode="links" current="schemes" activeStructural={STRUCTURAL_SCHEMES} />
 
+  <div class="scheme-back">
+    <a class="scheme-back-link" href="/notes">НАЗАД</a>
+  </div>
+
   <section class="scheme-grid" data-filter-schemes>
     {sortedSchemes.map((scheme) => (
       <article class="scheme-card" data-scheme-card data-topics={toTopicList(scheme.data.topics).join("|")}
@@ -58,6 +62,32 @@ const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] :
 </SiteLayout>
 
 <style>
+  .scheme-back {
+    margin-bottom: 14px;
+  }
+
+  .scheme-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid rgba(29, 233, 214, 0.35);
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    color: var(--ink);
+    background: linear-gradient(135deg, rgba(12, 12, 18, 0.9), rgba(10, 10, 14, 0.9));
+    box-shadow: 0 0 16px rgba(29, 233, 214, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .scheme-back-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 59, 79, 0.55);
+    box-shadow: 0 0 18px rgba(255, 59, 79, 0.2);
+  }
+
   .scheme-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
