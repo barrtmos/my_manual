@@ -25,6 +25,7 @@ const getPreview = (body) => {
     class="note-list list-mode"
     data-filter-list
     data-default-struct={STRUCTURAL_DEFAULT}
+    data-schemes-struct={STRUCTURAL_SCHEMES}
     data-struct-values={structural.join("|")}
   >
     {notes.map((note) => (
@@ -51,12 +52,14 @@ const getPreview = (body) => {
         data-struct={STRUCTURAL_SCHEMES}
         data-topics={toTopicList(scheme.data.topics).join("|")}
       >
-        <div class="scheme-title">{scheme.data.title}</div>
-        <div class="scheme-image">
-          {scheme.data.image ? (
-            <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
-          ) : null}
-        </div>
+        <a class="scheme-link" href={`/schemes/${scheme.slug}/`}>
+          <div class="scheme-title">{scheme.data.title}</div>
+          <div class="scheme-image">
+            {scheme.data.image ? (
+              <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+            ) : null}
+          </div>
+        </a>
       </article>
     ))}
   </section>
@@ -67,6 +70,7 @@ const getPreview = (body) => {
     const cards = Array.from(document.querySelectorAll("[data-note-card]"));
     const list = document.querySelector("[data-filter-list]");
     const allowedStructs = new Set((list?.dataset.structValues || "").split("|").filter(Boolean));
+    const schemesStruct = list?.dataset.schemesStruct || "";
     const params = new URLSearchParams(window.location.search);
     const paramStruct = params.get("struct");
 
@@ -85,7 +89,7 @@ const getPreview = (body) => {
         const isDefault = activeStruct === list?.dataset.defaultStruct;
 
         if (cardType === "scheme") {
-          structOk = isDefault || activeStruct === STRUCTURAL_SCHEMES;
+          structOk = isDefault || (schemesStruct && activeStruct === schemesStruct);
           topicsOk = !activeTopic || cardTopics.includes(activeTopic);
         } else {
           if (isDefault) {
@@ -204,6 +208,13 @@ const getPreview = (body) => {
     flex-direction: column;
     gap: 12px;
     box-shadow: 0 0 24px rgba(29, 233, 214, 0.12);
+  }
+
+  .scheme-link {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: inherit;
   }
 
   .scheme-title {

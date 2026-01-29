@@ -18,14 +18,15 @@ const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] :
 
   <section class="scheme-grid" data-filter-schemes>
     {sortedSchemes.map((scheme) => (
-      <article class="scheme-card" data-scheme-card data-topics={toTopicList(scheme.data.topics).join("|")}
-      >
-        <div class="scheme-title">{scheme.data.title}</div>
-        <div class="scheme-image">
-          {scheme.data.image ? (
-            <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
-          ) : null}
-        </div>
+      <article class="scheme-card" data-scheme-card data-topics={toTopicList(scheme.data.topics).join("|")}>
+        <a class="scheme-link" href={`/schemes/${scheme.slug}/`}>
+          <div class="scheme-title">{scheme.data.title}</div>
+          <div class="scheme-image">
+            {scheme.data.image ? (
+              <img src={scheme.data.image} alt={scheme.data.title} loading="lazy" />
+            ) : null}
+          </div>
+        </a>
       </article>
     ))}
   </section>
@@ -103,6 +104,13 @@ const toTopicList = (value) => (Array.isArray(value) ? value : value ? [value] :
     flex-direction: column;
     gap: 12px;
     box-shadow: 0 0 24px rgba(29, 233, 214, 0.12);
+  }
+
+  .scheme-link {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: inherit;
   }
 
   .scheme-title {

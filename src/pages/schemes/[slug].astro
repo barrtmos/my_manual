@@ -1,0 +1,84 @@
+---
+import { getCollection } from "astro:content";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import { STRUCTURAL_SCHEMES } from "../../config/taxonomy";
+
+export async function getStaticPaths() {
+  const schemes = await getCollection("schemes");
+  return schemes.map((scheme) => ({
+    params: { slug: scheme.slug },
+    props: { scheme }
+  }));
+}
+
+const { scheme } = Astro.props;
+---
+
+<SiteLayout title="my manual">
+  <FilterBar slot="filters" mode="links" current="schemes" activeStructural={STRUCTURAL_SCHEMES} />
+
+  <div class="scheme-back">
+    <a class="scheme-back-link" href="/schemes">НАЗАД</a>
+  </div>
+
+  <article class="scheme-full">
+    <h2>{scheme.data.title}</h2>
+    {scheme.data.image ? <img src={scheme.data.image} alt={scheme.data.title} /> : null}
+  </article>
+</SiteLayout>
+
+<style>
+  .scheme-back {
+    margin-bottom: 14px;
+  }
+
+  .scheme-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid rgba(29, 233, 214, 0.35);
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.72rem;
+    color: var(--ink);
+    background: linear-gradient(135deg, rgba(12, 12, 18, 0.9), rgba(10, 10, 14, 0.9));
+    box-shadow: 0 0 16px rgba(29, 233, 214, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+
+  .scheme-back-link:hover {
+    transform: translateY(-1px);
+    border-color: rgba(255, 59, 79, 0.55);
+    box-shadow: 0 0 18px rgba(255, 59, 79, 0.2);
+  }
+
+  .scheme-full {
+    border: 1px solid rgba(29, 233, 214, 0.3);
+    border-radius: 16px;
+    background: var(--card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 0 24px rgba(29, 233, 214, 0.12);
+  }
+
+  .scheme-full h2 {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 1.1rem;
+  }
+
+  .scheme-full img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 59, 79, 0.2);
+    background: rgba(9, 10, 16, 0.7);
+  }
+</style>
