@@ -1,44 +1,72 @@
-# Astro Starter Kit: Minimal
-
-```sh
-npm create astro@latest -- --template minimal
-```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
 # my_manual
+
+Minimal knowledge base built with Astro and Decap CMS.
+
+## Overview
+- Static site with notes and schemes.
+- Content is stored in Markdown under `src/content/`.
+- Decap CMS is available at `/admin/` for editing notes.
+
+## Tech Stack
+- Astro (static build)
+- Decap CMS (GitHub OAuth)
+- Content Collections
+
+## Routes
+- `/` → notes list
+- `/notes` → notes list with filters
+- `/notes/[slug]` → note detail
+- `/schemes` → schemes list
+- `/schemes/[slug]` → scheme detail
+- `/admin/` → Decap CMS
+
+## Content Structure
+```
+src/content/notes/   # notes (markdown)
+src/content/schemes/ # schemes (markdown)
+public/img/          # static assets
+public/img/schemes/  # scheme images
+```
+
+## Content Frontmatter
+Notes (`src/content/notes/*.md`):
+```
+---
+title: Title
+structural: ЗАМЕТКИ | ДИАЛОГИ | ИНСТРУКЦИИ | НА ЗАМЕТКУ
+topics:
+  - ЛИНУКС
+---
+```
+
+Schemes (`src/content/schemes/*.md`):
+```
+---
+title: Scheme title
+topics:
+  - VSC
+image: /img/schemes/example.png
+---
+```
+
+## Local Development
+```
+npm install
+npm run dev
+```
+
+## Build
+```
+npm run build
+```
+
+## CMS (Decap)
+- URL: `/admin/`
+- Config: `public/admin/config.yml`
+- OAuth handled by external Render Web Service.
+
+## License
+Private project.
+
+![Screenshot](public/img/screenshot.png)
+
