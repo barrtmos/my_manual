@@ -16,7 +16,13 @@ const { scheme } = Astro.props;
 ---
 
 <SiteLayout title="my manual">
-  <FilterBar slot="filters" mode="links" current="schemes" activeStructural={STRUCTURAL_SCHEMES} />
+  <FilterBar
+    slot="filters"
+    mode="links"
+    current="schemes"
+    activeStructural={STRUCTURAL_SCHEMES}
+    activeTopics={Array.isArray(scheme.data.topics) ? scheme.data.topics : [scheme.data.topics]}
+  />
 
   <div class="scheme-back">
     <a class="scheme-back-link" href="/schemes">НАЗАД</a>
